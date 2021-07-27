@@ -5,8 +5,6 @@
 > Information provided by the dataset publisher
 
 DOI: [doi:10.4121/uuid:915d2bfb-7e84-49ad-a286-dc35f063a460](https://doi.org/10.4121/uuid:915d2bfb-7e84-49ad-a286-dc35f063a460)
-Author: Felix Mannhardt (Eindhoven University of Technology)
-E-Mail: f.mannhardt@tue.nl
 
 ##### Description
 

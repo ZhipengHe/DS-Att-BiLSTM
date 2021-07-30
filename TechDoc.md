@@ -1,5 +1,30 @@
 ### Deep Learning Arcitecture
 
+#### Architecture 1: 
+
+Normal LSTM model
+
+
+#### Architecture 2: 
+
+LSTM model + Dense layer for Static features
+
+#### Architecture 3: 
+
+Attention-based LSTM model
+
+#### Architecture 4:
+
+Attention-based LSTM model + Attention-based Dense layer for Static features
+
+### Custom Neural Network
+
+#### LSTM
+
+Use nomarl LSTM for outcome prediction
+
+
+
 #### BiLSTM
 
 ![BiLSTM](img/BiLSTM.png)

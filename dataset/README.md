@@ -89,4 +89,13 @@ Diagnostic*
 
 ---
 
+- **Choose new outcome, not diagnose**
+
+- Read these paper carefully, [Analyzing the Trajectories of Patients with Sepsis using Process Mining](http://ceur-ws.org/Vol-1859/bpmds-08-paper.pdf) and [Outcome-Oriented Predictive Process Monitoring_Review and Benchmark]()
+
 ##### Clean Method for Sepsis
+
+- [x] Step 1: Update missing attributes values for static attributes
+- [ ] Step 2: Choose suitable outcome predictors
+- [ ] Step 3: Based on the selected predictors, conduct feature correlation analysis 
+

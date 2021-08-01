@@ -89,13 +89,55 @@ Diagnostic*
 
 ---
 
-- **Choose new outcome, not diagnose**
-
-- Read these paper carefully, [Analyzing the Trajectories of Patients with Sepsis using Process Mining](http://ceur-ws.org/Vol-1859/bpmds-08-paper.pdf) and [Outcome-Oriented Predictive Process Monitoring_Review and Benchmark]()
-
 ##### Clean Method for Sepsis
 
-- [x] Step 1: Update missing attributes values for static attributes
-- [ ] Step 2: Choose suitable outcome predictors
-- [ ] Step 3: Based on the selected predictors, conduct feature correlation analysis 
+- [x] **Step 1:** Update missing attributes values for static attributes
+    - [x] Preprocess in `sepsis_clean.py`
+    - [x] Export processed dataframe to `sepsis_processed.csv`
+- [x] **Step 2:** Choose suitable outcome predictors
+    - ❌ Choose **diagnosis** related features as predictors
+    - ✔️ Based on process model, choose reasonable predictors
+        - [x] Read this two paper carefully
+            - [x] Mannhardt, F., & Blinde, D. (2017). [Analyzing the Trajectories of Patients with Sepsis using Process Mining](http://ceur-ws.org/Vol-1859/bpmds-08-paper.pdf)
+            - [x] [Outcome-Oriented Predictive Process Monitoring: Review and Benchmark](https://arxiv.org/pdf/1707.06766.pdf)
+        - [x] Analysing the information from this two papers.
+        - [x] Identify potential predictors
 
+- [ ] Step 3: Based on the selected predictors, conduct feature correlation analysis 
+    - [ ] Label dataset for selected predictors
+    - [ ] Feature coorelation analysis for static features
+    - [ ] Select highly relative static features
+
+##### How to find suitable outcome predictors
+
+In the first paper, they identify these questions for this dataset:
+
+> - ❌ are particular medical guidelines for the treatment of sepsis patients followed:
+>   - patients should be administered antibiotics within one hour,
+>   - lactic acid measurements should be done within three hours;
+> > This problem is related to time prediction, not for outcome prediction.
+> - ✔️ visualize and investigate the following specific trajectories:
+>   - discharge without admission,
+>   - admission to the normal care,
+>   - admission to the intensive care,
+>   - admission to the normal care and transfer to intensive care;
+> - ❌ investigate the trajectory of patients that return within 28 days.
+> > From this paper, their do not find reasonable rules to identify the different cases from decision mining techniques.
+
+In the second paper, they create three different labelings for this log:
+
+> - ❌ sepsis_1: the patient returns to the emergency room within 28 days from the discharge,
+> > The AUC of sepsis_1 in the experiment are in a relatively low level.
+> - ✔️ sepsis_2: the patient is (eventually) admitted to intensive care,
+> - ✔️ sepsis_3: the patient is discharged from the hospital on the basis of something other than Release A (i.e., the most common release type).
+
+Based on both paper, some potential outcome predictors are proposed here:
+
+-  **Predictor 1:** if the patient has admission to intensive care or not (True or False)
+
+-  **Predictor 2:** the release type from hospital (Release A or Others) 
+
+##### Predictor 1: IC admission
+
+
+##### Predictor 2: Release type

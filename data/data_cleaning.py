@@ -1,10 +1,6 @@
-import os
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from pm4py.objects.conversion.log import converter as log_converter
 import pandas as pd
-
-
-WORKFOLDER = os.getcwd()
 
 def readDataset(file_path):
     """Read event log dataset from XES file to dataframe.
@@ -41,23 +37,3 @@ def orderCols(dynamic_cols, dataframe):
     dataframe[cols] = dataframe[cols].fillna(method='ffill')
 
     return dataframe
-
-
-def main():
-    """Main function for dataset cleaning"""
-
-    # Change your raw_data_path here, 
-    # if you do not put this python file and raw data in the same folder
-    raw_data_path = os.path.join(WORKFOLDER, "Sepsis Cases - Event Log.xes.gz")
-    log_df = readDataset(raw_data_path)
-
-    dynamic_cols = ['case:concept:name', 'concept:name', 'time:timestamp', 'org:group', 
-    'lifecycle:transition', 'CRP', 'LacticAcid', 'Leucocytes']
-    log_df = orderCols(dynamic_cols, log_df)
-
-    processed_data_path = os.path.join(WORKFOLDER, "sepsis_processed.csv")
-    log_df.to_csv(processed_data_path)
-
-
-if __name__ == "__main__":
-    main()

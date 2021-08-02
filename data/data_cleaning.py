@@ -1,6 +1,7 @@
 from pm4py.objects.log.importer.xes import importer as xes_importer
 from pm4py.objects.conversion.log import converter as log_converter
 import pandas as pd
+import numpy as np
 
 def readDataset(file_path):
     """Read event log dataset from XES file to dataframe.
@@ -16,24 +17,18 @@ def readDataset(file_path):
     dataframe = log_converter.apply(log, variant=log_converter.Variants.TO_DATA_FRAME)
     return dataframe
 
-def orderCols(dynamic_cols, dataframe):
-    """Reorder the columns in dataframe for dynamic and static features
+def check_if_activity_exists(group, activity_col, label_col, activity, pos_label, neg_label):
+    relevant_activity_idxs = np.where(group[activity_col] == activity)[0]
+    if len(relevant_activity_idxs) > 0:
+        idx = relevant_activity_idxs[0]
+        group[label_col] = pos_label
+        return group[:idx]
+    else:
+        group[label_col] = neg_label
+        return group
 
-    Args:
-        dynamic_cols: list for all dynamic feature names
-        dataframe: The dataframe of raw event log
-
-    Returns:
-        dataframe: The reordered dataframe
-        cols: list for all static feature names
-    """
-    cols = list(dataframe.columns.values) #Make a list of all of the columns in the df
-    
-    for col in dynamic_cols:
-        cols.pop(cols.index(col)) #Remove dynamic cols from list
-
-    cols.sort()
-    dataframe = dataframe[dynamic_cols + cols] #Create new dataframe with columns in the order you want
-    dataframe[cols] = dataframe[cols].fillna(method='ffill')
-
-    return dataframe
+def check_if_any_of_activities_exist(group, activity_col, activities):
+    if np.sum(group[activity_col].isin(activities)) > 0:
+        return True
+    else:
+        return False

@@ -103,10 +103,10 @@ Diagnostic*
         - [x] Analysing the information from this two papers.
         - [x] Identify potential predictors
 
-- [ ] Step 3: Based on the selected predictors, conduct feature correlation analysis 
-    - [ ] Label dataset for selected predictors
-    - [ ] Feature coorelation analysis for static features
-    - [ ] Select highly relative static features
+- [x] Step 3: Based on the selected predictors, conduct feature correlation analysis 
+    - [x] Label dataset for selected predictors
+    - [x] Feature coorelation analysis for static features
+    - [x] Select highly relative static features
 
 ##### How to find suitable outcome predictors
 
@@ -138,6 +138,18 @@ Based on both paper, some potential outcome predictors are proposed here:
 -  **Predictor 2:** the release type from hospital (Release A or Others) 
 
 ##### Predictor 1: IC admission
+
+1. Label the dataset by `pos_label = True` and `neg_label = False` by function `check_if_activity_exists` in `data/data_cleaning.py`.
+
+2. Conduct feature coorelation analysis for static features
+    - `label` means the Predictor 1
+
+![Sepsis IC Admission](/img/dataset/Sepsis_IC_Admission.png)
+
+3. Select highly relative static features
+    - `DisfuncOrg`
+    - `Hypotensie`
+    - `Oligurie`
 
 
 ##### Predictor 2: Release type

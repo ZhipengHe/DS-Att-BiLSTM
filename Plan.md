@@ -35,8 +35,8 @@ Based on the dataset ***Sepsis***, constructing the general experiment architect
 
 - [x] Step 1: Update missing attributes values for static attributes
     - [x] Export processed dataframe to CSV file
-- [ ] Step 2: Choose suitable outcome predictors
-- [ ] Step 3: Based on the selected predictors, conduct feature correlation analysis to select 
+- [x] Step 2: Choose suitable outcome predictors
+- [x] Step 3: Based on the selected predictors, conduct feature correlation analysis to select 
 
 ##### Build four neural network architectures
 

@@ -7,7 +7,7 @@ import pandas as pd
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(0, parent_dir) 
-from data.data_cleaning import readDataset, check_if_activity_exists, check_if_any_of_activities_exist
+from data.data_cleaning import readDataset, check_if_activity_exists, check_if_any_of_activities_exist, featureCorrelation
 
 WORKFOLDER = os.getcwd()
 
@@ -17,8 +17,8 @@ case_id_col = "case:concept:name"
 timestamp_col = "time:timestamp"
 activity_col = "concept:name"
 label_col = "label"
-pos_label = "True"
-neg_label = "False"
+pos_label = True
+neg_label = False
 
 # features for classifier
 dynamic_cat_cols = ['concept:name', 'org:group']
@@ -61,10 +61,17 @@ def main():
     labeled_df = processed_df.sort_values(
         timestamp_col, ascending=True, kind="mergesort").groupby(case_id_col).apply(
             check_if_activity_exists, activity_col=activity_col, label_col=label_col, activity="Admission IC", pos_label=pos_label, neg_label=neg_label)
-    labeled_df.to_csv(os.path.join(WORKFOLDER, "sepsis_labeled.csv"), index=False)
 
     print('Distribution of cases by the target variable\n')
     print(labeled_df.groupby([label_col])[case_id_col].nunique())
+
+    # labeled_df[static_cat_cols[1:]] = labeled_df[static_cat_cols[1:]].astype(int)
+    # labeled_df[label_col] = labeled_df[label_col].astype(int)
+
+    labeled_df.to_csv(os.path.join(WORKFOLDER, "sepsis_labeled.csv"), index=False)
+
+    cor_columns = static_cols + [label_col]
+    featureCorrelation(labeled_df, cor_columns, "Sepsis_IC_Admission")
 
 if __name__ == "__main__":
     main()

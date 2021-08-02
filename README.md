@@ -1,4 +1,4 @@
-### Dynamic and Static Features in Attention-Based BiLSTM Neural Networks
+### Dynamic and Static Features in Attention-Based LSTM Neural Networks
 
 #### Requirement
 

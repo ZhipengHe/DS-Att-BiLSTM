@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 
-import tensorflow as tf
 from tensorflow.keras.layers.experimental import preprocessing
 
 def get_category_encoding_layer(name, dataset, dtype, max_tokens=None):
@@ -61,6 +60,5 @@ def get_normalization_layer(name, dataset):
     normalizer.adapt(feature_ds)
 
     return normalizer
-
 
 

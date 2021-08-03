@@ -7,7 +7,8 @@ import pandas as pd
 current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parent_dir = os.path.dirname(current_dir)
 sys.path.insert(0, parent_dir) 
-from data.data_cleaning import readDataset, check_if_activity_exists, check_if_any_of_activities_exist, featureCorrelation
+from data.data_cleaning import *
+
 
 WORKFOLDER = os.getcwd()
 
@@ -53,12 +54,14 @@ def main():
     processed_df = log_df[full_cols].fillna(method='ffill')
     # processed_df.to_csv(os.path.join(WORKFOLDER, "sepsis_processed.csv"), index=False)
 
-    # tmp = processed_df.groupby([case_id_col]).apply(check_if_any_of_activities_exist, activity_col=activity_col, activities=release_type)
-    # incomplete_cases = tmp.index[tmp==False]
-    # filtered_df = processed_df[~processed_df[case_id_col].isin(incomplete_cases)]
+    processed_df = processed_df.reset_index(drop=True)
+
+    tmp = processed_df.groupby([case_id_col]).apply(check_if_any_of_activities_exist, activity_col=activity_col, activities=release_type)
+    incomplete_cases = tmp.index[tmp==False]
+    filtered_df = processed_df[~processed_df[case_id_col].isin(incomplete_cases)]
     # filtered_df.to_csv(os.path.join(WORKFOLDER, "sepsis_filtered.csv"), index=False)
 
-    labeled_df = processed_df.sort_values(
+    labeled_df = filtered_df.sort_values(
         timestamp_col, ascending=True, kind="mergesort").groupby(case_id_col).apply(
             check_if_activity_exists, activity_col=activity_col, label_col=label_col, activity="Admission IC", pos_label=pos_label, neg_label=neg_label)
 
@@ -68,10 +71,30 @@ def main():
     # labeled_df[static_cat_cols[1:]] = labeled_df[static_cat_cols[1:]].astype(int)
     # labeled_df[label_col] = labeled_df[label_col].astype(int)
 
+    labeled_df = labeled_df.reset_index(drop=True)
+
+    # add features extracted from timestamp
+    labeled_df[timestamp_col] = pd.to_datetime(labeled_df[timestamp_col], utc=True)
+    labeled_df = labeled_df.groupby(case_id_col).apply(extract_timestamp_features, timestamp_col=timestamp_col)
+
     labeled_df.to_csv(os.path.join(WORKFOLDER, "sepsis_labeled.csv"), index=False)
 
     cor_columns = static_cols + [label_col]
     featureCorrelation(labeled_df, cor_columns, "Sepsis_IC_Admission")
 
+    act_seq = labeled_df.groupby(case_id_col)[activity_col].apply(list).reset_index(name='act_seq')
+    res_seq = labeled_df.groupby(case_id_col)['org:group'].apply(list).reset_index(name='res_seq').sort_values(by=[case_id_col])
+    t_seq = labeled_df.groupby(case_id_col)['elapsed_time'].apply(list).reset_index(name='t_seq').sort_values(by=[case_id_col])
+    label_seq = labeled_df.groupby(case_id_col).first()['label'].reset_index(name='label_seq').sort_values(by=[case_id_col])
+
+    seq_df = act_seq
+    seq_df['res_seq'] = res_seq['res_seq']
+    seq_df['t_seq'] = t_seq['t_seq']
+    seq_df[label_col] = label_seq['label_seq']
+    seq_df.to_csv(os.path.join(WORKFOLDER, "seq_df.csv"))
+
+
 if __name__ == "__main__":
     main()
+
+

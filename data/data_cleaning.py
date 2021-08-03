@@ -39,6 +39,18 @@ def check_if_any_of_activities_exist(group, activity_col, activities):
     else:
         return False
 
+def extract_timestamp_features(group, timestamp_col):
+    
+    group = group.sort_values(timestamp_col, ascending=False, kind='mergesort')
+
+    tmp = group[timestamp_col] - group[timestamp_col].iloc[-1]
+    # tmp = tmp.fillna(0)
+    group["elapsed_time"] = tmp.apply(lambda x: float(x / np.timedelta64(1, 'm'))) # m is for minutes
+
+    group = group.sort_values(timestamp_col, ascending=True, kind='mergesort')
+    
+    return group
+
 def featureCorrelation(dataframe, cor_columns, name):
     """
     """

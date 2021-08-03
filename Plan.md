@@ -2,7 +2,7 @@
 
 Plan by @ZhipengHe
 
-Supervised by @ChunOuyang and @CatarinaMoreira
+<!-- Supervised by @ChunOuyang and @CatarinaMoreira -->
 
 #### Research Task
 
@@ -36,12 +36,29 @@ Based on the dataset ***Sepsis***, constructing the general experiment architect
 - [x] Step 1: Update missing attributes values for static attributes
     - [x] Export processed dataframe to CSV file
 - [x] Step 2: Choose suitable outcome predictors
-- [x] Step 3: Based on the selected predictors, conduct feature correlation analysis to select 
+- [x] Step 3: Based on the selected predictors, conduct feature correlation analysis to select static features
 
 ##### Build four neural network architectures
 
-- [ ] Dynamic features 
-- [ ] Dynamic features + Static features
-- [ ] Dynamic features + Attention
-- [ ] Dynamic features + Static features + Attention
+- [x] Dynamic features 
+- [x] Dynamic features + Static features
+- [x] Dynamic features + Attention
+- [x] Dynamic features + Static features + Attention
+
+##### Evaluation
+
+- [ ] Experiment 1: Dynamic (Ongoing)
+- [ ] Experiment 2: 
+- [ ] Experiment 3: 
+- [ ] Experiment 4: 
+
+#### Stage 2
+
+- Based on the results of stage 1, update neural network architectures.
+- Extend the evaluation to mimic-iv and bpic'11
+
+#### Stage 3
+
+- Summarize the evaluation outcomes
+- Write the manuscript
 

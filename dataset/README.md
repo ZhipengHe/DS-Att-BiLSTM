@@ -141,7 +141,7 @@ Based on both paper, some potential outcome predictors are proposed here:
 
 1. Label the dataset by `pos_label = True` and `neg_label = False` by function `check_if_activity_exists` in `data/data_cleaning.py`.
 
-2. Conduct feature coorelation analysis for static features
+2. Conduct feature correlation analysis for static features
     - `label` means the Predictor 1
 
 ![Sepsis IC Admission](/img/dataset/Sepsis_IC_Admission.png)

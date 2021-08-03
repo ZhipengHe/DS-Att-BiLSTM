@@ -61,15 +61,19 @@ def main():
     filtered_df = processed_df[~processed_df[case_id_col].isin(incomplete_cases)]
     # filtered_df.to_csv(os.path.join(WORKFOLDER, "sepsis_filtered.csv"), index=False)
 
-    labeled_df = filtered_df.sort_values(
-        timestamp_col, ascending=True, kind="mergesort").groupby(case_id_col).apply(
+    # label for predictor 1
+    labeled_df = processed_df.sort_values(
+        by=[case_id_col, timestamp_col], ascending=True, kind="mergesort").groupby(case_id_col).apply(
             check_if_activity_exists, activity_col=activity_col, label_col=label_col, activity="Admission IC", pos_label=pos_label, neg_label=neg_label)
+
+    # label for predictor 2
+    # labeled_df = filtered_df.sort_values(
+    #     by=[case_id_col, timestamp_col], ascending=True, kind="mergesort").groupby(case_id_col).apply(
+    #         check_if_activity_exists, activity_col=activity_col, label_col=label_col, activity="Release A", pos_label=pos_label, neg_label=neg_label)
+
 
     print('Distribution of cases by the target variable\n')
     print(labeled_df.groupby([label_col])[case_id_col].nunique())
-
-    # labeled_df[static_cat_cols[1:]] = labeled_df[static_cat_cols[1:]].astype(int)
-    # labeled_df[label_col] = labeled_df[label_col].astype(int)
 
     labeled_df = labeled_df.reset_index(drop=True)
 
@@ -80,18 +84,23 @@ def main():
     labeled_df.to_csv(os.path.join(WORKFOLDER, "sepsis_labeled.csv"), index=False)
 
     cor_columns = static_cols + [label_col]
+
     featureCorrelation(labeled_df, cor_columns, "Sepsis_IC_Admission")
+    # featureCorrelation(labeled_df, cor_columns, "Sepsis_Release_A")
+    # featureCorrelation(labeled_df, cor_columns, "Sepsis_IC_Admission_filter")
+    # featureCorrelation(labeled_df, cor_columns, "Sepsis_Release_A_filter")
 
-    act_seq = labeled_df.groupby(case_id_col)[activity_col].apply(list).reset_index(name='act_seq')
-    res_seq = labeled_df.groupby(case_id_col)['org:group'].apply(list).reset_index(name='res_seq').sort_values(by=[case_id_col])
-    t_seq = labeled_df.groupby(case_id_col)['elapsed_time'].apply(list).reset_index(name='t_seq').sort_values(by=[case_id_col])
-    label_seq = labeled_df.groupby(case_id_col).first()['label'].reset_index(name='label_seq').sort_values(by=[case_id_col])
 
-    seq_df = act_seq
-    seq_df['res_seq'] = res_seq['res_seq']
-    seq_df['t_seq'] = t_seq['t_seq']
-    seq_df[label_col] = label_seq['label_seq']
-    seq_df.to_csv(os.path.join(WORKFOLDER, "seq_df.csv"))
+    # act_seq = labeled_df.groupby(case_id_col)[activity_col].apply(list).reset_index(name='act_seq')
+    # res_seq = labeled_df.groupby(case_id_col)['org:group'].apply(list).reset_index(name='res_seq').sort_values(by=[case_id_col])
+    # t_seq = labeled_df.groupby(case_id_col)['elapsed_time'].apply(list).reset_index(name='t_seq').sort_values(by=[case_id_col])
+    # label_seq = labeled_df.groupby(case_id_col).first()['label'].reset_index(name='label_seq').sort_values(by=[case_id_col])
+
+    # seq_df = act_seq
+    # seq_df['res_seq'] = res_seq['res_seq']
+    # seq_df['t_seq'] = t_seq['t_seq']
+    # seq_df[label_col] = label_seq['label_seq']
+    # seq_df.to_csv(os.path.join(WORKFOLDER, "seq_df.csv"))
 
 
 if __name__ == "__main__":

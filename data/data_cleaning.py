@@ -26,7 +26,7 @@ def check_if_activity_exists(group, activity_col, label_col, activity, pos_label
     if len(relevant_activity_idxs) > 0:
         idx = relevant_activity_idxs[0]
         group[label_col] = pos_label
-        return group[:idx]
+        return group
     else:
         group[label_col] = neg_label
         return group
@@ -63,7 +63,7 @@ def featureCorrelation(dataframe, cor_columns, name):
     mask = np.triu(np.ones_like(corr, dtype=bool))
 
     # Set up the matplotlib figure
-    f, ax = plt.subplots(figsize=(20, 18))
+    f, ax = plt.subplots(figsize=(20, 17))
 
     # Generate a custom diverging colormap
     cmap = sns.diverging_palette(230, 20, as_cmap=True)

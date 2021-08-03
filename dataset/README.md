@@ -144,12 +144,82 @@ Based on both paper, some potential outcome predictors are proposed here:
 2. Conduct feature correlation analysis for static features
     - `label` means the Predictor 1
 
+```
+# outcome distribution for predictor 1
+Raw dataset:
+False    940
+True     110
+
+Filtered dataset:
+False    675
+True     107
+```
+
+All cases:
+
 ![Sepsis IC Admission](/img/dataset/Sepsis_IC_Admission.png)
 
-3. Select highly relative static features
-    - `DisfuncOrg`
-    - `Hypotensie`
-    - `Oligurie`
+Only completed cases:
 
+![Sepsis IC Admission](/img/dataset/Sepsis_IC_Admission_filter.png)
+
+3. Select highly relative static features
+
+    - All cases:
+        - `DisfuncOrg` (exclude this one, highly related to `Hypotensie`)
+        - `Hypotensie`
+        - `Oligurie`
+    
+    - Only completed cases:
+        - `DisfuncOrg` (exclude this one, highly related to `Hypotensie`)
+        - `Hypotensie`
+        - `Oligurie`
+
+
+
+> Note: Check if Predictor 1 can prove that select hig relavent static features can improve the prediction results.
+> if abs(correlation) is large than 0.2
+
+---
 
 ##### Predictor 2: Release type
+
+1. Label the dataset by `pos_label = True` and `neg_label = False` by function `check_if_activity_exists` in `data/data_cleaning.py`.
+
+2. Conduct feature correlation analysis for static features
+    - `label` means the Predictor 2
+
+```
+# outcome distribution for predictor 2
+Raw dataset:
+False    379
+True     671
+
+Filtered dataset:
+False    111
+True     671
+
+```
+
+All cases:
+
+![Sepsis IC Admission](/img/dataset/Sepsis_Release_A.png)
+
+Only completed cases:
+
+![Sepsis IC Admission](/img/dataset/Sepsis_Release_A_filter.png)
+
+3. Select highly relative static features:
+    - All cases:
+        - No relatively high correlated features
+    
+    - Only completed cases:
+        - `Hypotensie`
+        - `Age`
+
+---
+
+From the analysis for this two predictors, 
+- the correlation analysis cannot figure out a list of suitable static features
+- the distribution of outcomes for both predictor are inbalanced
+

@@ -7,10 +7,13 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers, Model, Input
 
-class DynamicModel(Model):
+class D_Model(Model):
+    """
+    """
+
     def __init__(self):
         # Initialize the necessary components of tf.keras.Model
-        super(DynamicModel, self).__init__()
+        super(D_Model, self).__init__()
         # Now we initalize the needed layers - order does not matter.
 
         # Embedding layer for activity
@@ -59,3 +62,7 @@ class DynamicModel(Model):
     def model(self):
         x = Input(shape=(24, 24, 3)) # change shape here
         return Model(inputs=[x], outputs=self.call(x))
+
+        
+
+

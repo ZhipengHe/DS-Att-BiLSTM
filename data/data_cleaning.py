@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import json
 
 def readDataset(file_path):
     """Read event log dataset from XES file to dataframe.
@@ -73,3 +74,17 @@ def featureCorrelation(dataframe, cor_columns, name):
                 square=True, linewidths=.5, cbar_kws={"shrink": .5})
 
     f.savefig(name+'.png')
+
+def extract_logs_metadata(df):
+    keys = ["[PAD]", "[UNK]"]
+    activities = list(df["concept:name"].unique())
+    keys.extend(activities)
+    val = range(len(keys))
+
+    coded_activity = dict({"x_word_dict":dict(zip(keys, val))})
+    code_activity_normal = dict({"y_word_dict": dict(zip(activities, range(len(activities))))})
+
+    coded_activity.update(code_activity_normal)
+    coded_json = json.dumps(coded_activity)
+    with open(f"metadata.json", "w") as metadata_file:
+        metadata_file.write(coded_json)

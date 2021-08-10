@@ -72,6 +72,7 @@ def prepare_data(df,
     act = df["prefix"].values
     res = df["res_list"].values
     label = df["label"].values
+    t = df["elapsed_time_log"].values
 
     token_act = list()
     for _act in act:
@@ -85,6 +86,9 @@ def prepare_data(df,
     for _label in label:
         token_label.append(_label)
 
+    token_t = list()
+    for _t in t:
+        token_t.append(_t)
 
     token_act = tf.keras.preprocessing.sequence.pad_sequences(
         token_act, maxlen=max_case_length)
@@ -92,13 +96,17 @@ def prepare_data(df,
     token_res = tf.keras.preprocessing.sequence.pad_sequences(
         token_res, maxlen=max_case_length)
     
+    
 
     token_act = np.array(token_act, dtype=np.float32)
     token_res = np.array(token_res, dtype=np.float32)
+    token_t = np.array(token_t, dtype=np.float32)
     token_label = np.array(token_label, dtype=np.int)
     token_label = np.transpose(token_label)
+    token_t = np.array(token_t)
+    token_t = np.transpose(token_t)
 
-    return token_act, token_res, token_label
+    return token_act, token_res, token_label, token_t
 
 
 

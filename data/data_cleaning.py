@@ -20,17 +20,33 @@ def readDataset(file_path):
     dataframe = log_converter.apply(log, variant=log_converter.Variants.TO_DATA_FRAME)
     return dataframe
 
-def check_if_activity_exists(group, activity_col, label_col, activity, pos_label, neg_label):
+def check_if_activity_exists(group, activity_col, label_col, activity):
     """
     """
     relevant_activity_idxs = np.where(group[activity_col] == activity)[0]
     if len(relevant_activity_idxs) > 0:
         idx = relevant_activity_idxs[0]
-        group[label_col] = pos_label
+        group[label_col] = True
         return group
     else:
-        group[label_col] = neg_label
+        group[label_col] = False
         return group
+
+def check_activity_order(group, activity_col, label_col, pre_act, post_act):
+    """
+    """
+    if not check_if_any_of_activities_exist(group, activity_col, [pre_act, post_act]):
+        group[label_col] = 1
+    else:
+        if not check_if_any_of_activities_exist(group, activity_col, [pre_act]):
+            group[label_col] = 3
+        else:
+            if not check_if_any_of_activities_exist(group, activity_col, [post_act]):
+                group[label_col] = 2
+            else:
+                group[label_col] = 4
+        
+    return group
 
 def check_if_any_of_activities_exist(group, activity_col, activities):
     """
@@ -76,15 +92,38 @@ def featureCorrelation(dataframe, cor_columns, name):
     f.savefig(name+'.png')
 
 def extract_logs_metadata(df):
-    keys = ["[PAD]", "[UNK]"]
+    keys1 = ["[PAD]", "[UNK]"]
     activities = list(df["concept:name"].unique())
-    keys.extend(activities)
-    val = range(len(keys))
+    resource = list(df["org:group"].unique())
 
-    coded_activity = dict({"x_word_dict":dict(zip(keys, val))})
-    code_activity_normal = dict({"y_word_dict": dict(zip(activities, range(len(activities))))})
+    keys1.extend(activities)
+    val1 = range(len(keys1))
 
-    coded_activity.update(code_activity_normal)
+    keys2 = ["[PAD]", "[UNK]"]
+    keys2.extend(resource)
+    val2 = range(len(keys2))
+
+    coded_activity = dict({"act_word_dict":dict(zip(keys1, val1))})
+    coded_resource = dict({"res_word_dict": dict(zip(keys2, val2))})
+
+    coded_activity.update(coded_resource)
     coded_json = json.dumps(coded_activity)
     with open(f"metadata.json", "w") as metadata_file:
         metadata_file.write(coded_json)
+
+def prefix_helper_func(df):
+    case_id, case_name, resource = "case:concept:name", "concept:name", "org:group"
+    idx = 0
+    unique_cases = df[case_id].unique()
+    for _, case in enumerate(unique_cases):
+        act = df[df[case_id] == case][case_name].to_list()
+        res = df[df[case_id] == case][resource].to_list()
+        for i in range(len(act)):
+            prefix = np.where(i == 0, act[0], ":||:".join(act[:i+1]))        
+            df.at[idx, "prefix"]  =  prefix
+            df.at[idx, "k"] =  i
+            res_list = np.where(i == 0, res[0], ":||:".join(res[:i+1]))
+            df.at[idx, "res_list"]  =  res_list
+            idx = idx + 1
+    return df
+

@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
+import random
 
+import tensorflow as tf
+from tensorflow.keras import utils
 from tensorflow.keras.layers.experimental import preprocessing
 
 def get_category_encoding_layer(name, dataset, dtype, max_tokens=None):
@@ -61,4 +64,69 @@ def get_normalization_layer(name, dataset):
 
     return normalizer
 
+
+def prepare_data(df, 
+    act_word_dict, res_word_dict, 
+    max_case_length):
+    
+    act = df["prefix"].values
+    res = df["res_list"].values
+    label = df["label"].values
+
+    token_act = list()
+    for _act in act:
+        token_act.append([act_word_dict[s] for s in _act.split(":||:")])
+
+    token_res = list()
+    for _res in res:
+        token_res.append([res_word_dict[s] for s in _res.split(":||:")])
+    
+    token_label = list()
+    for _label in label:
+        token_label.append(_label)
+
+
+    token_act = tf.keras.preprocessing.sequence.pad_sequences(
+        token_act, maxlen=max_case_length)
+
+    token_res = tf.keras.preprocessing.sequence.pad_sequences(
+        token_res, maxlen=max_case_length)
+    
+
+    token_act = np.array(token_act, dtype=np.float32)
+    token_res = np.array(token_res, dtype=np.float32)
+    token_label = np.array(token_label, dtype=np.int)
+    token_label = np.transpose(token_label)
+
+    return token_act, token_res, token_label
+
+
+
+def split_train_test(df, percentage):
+    cases = set(df["case:concept:name"].unique().tolist())
+
+    # num_test_cases = int(np.round(len(cases)*percentage))
+    # test_cases = cases[:num_test_cases]
+    # train_cases = cases[num_test_cases:]
+
+    num_test_cases = int(np.round(len(cases)*percentage)/2) # set the number to select here.
+    test_cases = random.Random(2021).sample(cases, num_test_cases)
+    rest_cases = cases.difference(test_cases)
+    val_cases = random.Random(2021).sample(rest_cases, num_test_cases)
+    train_cases = rest_cases.difference(val_cases)
+
+    df_train, df_test, df_val = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+    for case in train_cases:
+        df_train = df_train.append(df[df["case:concept:name"] == case]) 
+    df_train = df_train.sort_values('time:timestamp', ascending=True).reset_index(drop=True)
+ 
+    for case in test_cases:
+        df_test = df_test.append(df[df["case:concept:name"]==case]) 
+    df_test = df_test.sort_values('time:timestamp', ascending=True).reset_index(drop=True)
+
+    for case in val_cases:
+        df_val = df_val.append(df[df["case:concept:name"]==case]) 
+    df_val = df_val.sort_values('time:timestamp', ascending=True).reset_index(drop=True)
+    
+    return df_train, df_test, df_val
 

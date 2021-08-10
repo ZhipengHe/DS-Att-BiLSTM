@@ -80,7 +80,7 @@ def _predictor_1(inputs, filtered):
         df = _clean_imcompleted(df)
     labeled_df = df.sort_values(
         by=[case_id_col, timestamp_col], ascending=True, kind="mergesort").groupby(case_id_col).apply(
-            check_if_activity_exists, activity_col=activity_col, label_col=label_col, activity="Admission IC", pos_label=pos_label, neg_label=neg_label)
+            check_if_activity_exists, activity_col=activity_col, label_col=label_col, activity="Admission IC")
     
     print('Distribution of cases by the target variable\n')
     print(labeled_df.groupby([label_col])[case_id_col].nunique())
@@ -93,6 +93,11 @@ def _predictor_1(inputs, filtered):
     else:
         featureCorrelation(labeled_df, cor_cols, "Sepsis_p1")
         labeled_df.to_csv(os.path.join(WORKFOLDER, "sepsis_p1.csv"), index=False)
+    
+    labeled_df = labeled_df.reset_index(drop=True)
+
+    prefix_df = prefix_helper_func(labeled_df)
+    prefix_df.to_csv(os.path.join(WORKFOLDER, "sepsis_p1_prefix.csv"), index=False)
 
 def _predictor_2(inputs, filtered):
     """label for predictor 2 - Release type
@@ -107,7 +112,7 @@ def _predictor_2(inputs, filtered):
         df = _clean_imcompleted(df)
     labeled_df = df.sort_values(
         by=[case_id_col, timestamp_col], ascending=True, kind="mergesort").groupby(case_id_col).apply(
-            check_if_activity_exists, activity_col=activity_col, label_col=label_col, activity="Release A", pos_label=pos_label, neg_label=neg_label)
+            check_if_activity_exists, activity_col=activity_col, label_col=label_col, activity="Release A")
     
     print('Distribution of cases by the target variable\n')
     print(labeled_df.groupby([label_col])[case_id_col].nunique())
@@ -130,7 +135,7 @@ def _predictor_3(inputs, filtered):
     # need to change the label method.
     labeled_df = df.sort_values(
         by=[case_id_col, timestamp_col], ascending=True, kind="mergesort").groupby(case_id_col).apply(
-            check_if_activity_exists, activity_col=activity_col, label_col=label_col, activity="Release A", pos_label=pos_label, neg_label=neg_label)
+            check_activity_order, activity_col=activity_col, label_col=label_col, pre_act="Admission NC", post_act="Admission IC")
     
     print('Distribution of cases by the target variable\n')
     print(labeled_df.groupby([label_col])[case_id_col].nunique())
@@ -143,6 +148,7 @@ def _predictor_3(inputs, filtered):
     else:
         featureCorrelation(labeled_df, cor_cols, "Sepsis_p3")
         labeled_df.to_csv(os.path.join(WORKFOLDER, "sepsis_p3.csv"), index=False)
+    
 
 
 
@@ -156,9 +162,11 @@ def main():
     extract_logs_metadata(log_df)
 
     # _predictor_1(log_df, False)
-    # _predictor_1(log_df, True)
+    _predictor_1(log_df, True)
     # _predictor_2(log_df, False)
     # _predictor_2(log_df, True)
+    # _predictor_3(log_df, False)
+    # _predictor_3(log_df, True)
 
     # act_seq = labeled_df.groupby(case_id_col)[activity_col].apply(list).reset_index(name='act_seq')
     # res_seq = labeled_df.groupby(case_id_col)['org:group'].apply(list).reset_index(name='res_seq').sort_values(by=[case_id_col])

@@ -223,3 +223,49 @@ From the analysis for this two predictors,
 - the correlation analysis cannot figure out a list of suitable static features
 - the distribution of outcomes for both predictor are inbalanced
 
+##### Predictor 3: case trajectories
+
+Four types:
+- Type 1: discharge without admission
+- Type 2: admission to the normal care
+- Type 3: admission to the intensive care
+- Type 4: admission to the normal care and transfer to intensive care
+
+```
+# outcome distribution for predictor 3
+Raw dataset:
+1    240
+2    700
+3     10
+4    100
+
+Filtered dataset:
+1      0
+2    675
+3      7
+4    100
+```
+
+Feature correlation:
+
+All cases:
+
+![Sepsis](/img/dataset/Sepsis_p3.png)
+
+Only completed cases:
+
+![Sepsis](/img/dataset/Sepsis_p3_filter.png)
+
+Select highly relative static features:
+- All cases:
+    - `DisfuncOrg` (exclude this one, highly related to `Hypotensie`)
+    - `Hypotensie`
+    - `Oligurie`
+
+- Only completed cases:
+    - `DisfuncOrg` (exclude this one, highly related to `Hypotensie`)
+    - `Hypotensie`
+    - `Oligurie`
+
+The correlation results for Predictor 3 are similar with Predictor 1. Thus, here uses Predictor 1 for experiments.
+

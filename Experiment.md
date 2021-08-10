@@ -58,4 +58,3 @@ True     107
 1. The outcome predictor should not be a part of the business process.
 2. The dataset should include enough cases and have balanced distribution of the predictor types.
 
-

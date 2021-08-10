@@ -47,10 +47,18 @@ Based on the dataset ***Sepsis***, constructing the general experiment architect
 
 ##### Evaluation
 
-- [ ] Experiment 1: Dynamic (Ongoing)
-- [ ] Experiment 2: 
-- [ ] Experiment 3: 
-- [ ] Experiment 4: 
+- [x] Experiment 1: Dynamic
+- [x] Experiment 2: Dynamic + Static
+- [ ] ~~Experiment 3:~~
+- [ ] ~~Experiment 4:~~
+
+###### Recent issues:
+
+Need to disscuss the new research direction
+
+- Our deep learning models work well, but the results are not corresponding to our plan. 
+    - the coorelation for static features
+    - the prediction results
 
 #### Stage 2
 

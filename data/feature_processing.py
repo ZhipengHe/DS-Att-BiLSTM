@@ -91,10 +91,10 @@ def prepare_data(df,
         token_t.append(_t)
 
     token_act = tf.keras.preprocessing.sequence.pad_sequences(
-        token_act, maxlen=max_case_length)
+        token_act, maxlen=max_case_length, padding='post')
 
     token_res = tf.keras.preprocessing.sequence.pad_sequences(
-        token_res, maxlen=max_case_length)
+        token_res, maxlen=max_case_length, padding='post')
     
     
 

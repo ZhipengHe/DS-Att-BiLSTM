@@ -46,6 +46,8 @@ False    675
 True     107
 ```
 
+
+
 - **Hypothesis 2**: The predictor is ralated to theprocess activities or the trajectories.
 
     - **Predictor 1:** if the patient has admission to intensive care or not (True or False)
